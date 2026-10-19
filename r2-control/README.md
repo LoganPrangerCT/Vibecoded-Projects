@@ -1,6 +1,6 @@
 # R2 Control
 
-A Windows desktop configuration app for the Attack Shark R2 mouse. Rust handles device communication, validation, local storage and the native window; HTML/CSS/JavaScript provides the embedded WebView2 interface.
+A Rust rewrite of the Attack Shark R2 configuration software, with a completely rebuilt UI replacing the broken, clunky ATK interface. Rust handles device communication, validation, local storage and the native window; HTML/CSS/JavaScript provides the embedded WebView2 interface. Hardware access still uses the original vendor helper.
 
 ## Features
 
@@ -19,6 +19,8 @@ Read [SECURITY.md](SECURITY.md) for the pre-publication audit, dependency result
 Only application source, required UI assets, regression tests, dependency manifests and small build/test scripts. No personal macros/profiles, credentials, captured device data, recovered vendor application, prebuilt app, compiler distribution or hardware-helper binary is included. This is a source project, not a ready-to-run download.
 
 ## Windows build
+
+Runtime and build prerequisites are listed in [requirements.txt](requirements.txt). Rust dependencies are managed by `Cargo.toml` and `Cargo.lock`.
 
 Use an x64 Windows machine with the Microsoft WebView2 Runtime. Building uses the GNU Rust target with LLVM-MinGW; the tested configuration was Rust 1.99.1 and LLVM-MinGW 20260519 (MSVCRT, x86_64).
 
