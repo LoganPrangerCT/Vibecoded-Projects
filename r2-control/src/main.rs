@@ -19,6 +19,7 @@ fn workspace() -> anyhow::Result<PathBuf> {
     }
     let executable = std::env::current_exe()?;
     let folder = executable.parent().unwrap();
+    #[cfg(debug_assertions)]
     if folder
         .file_name()
         .is_some_and(|n| n == "debug" || n == "release")

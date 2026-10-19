@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([switch]$Offline)
+param([switch]$Offline, [switch]$SkipHelper)
 $ErrorActionPreference = 'Stop'
 if ($env:OS -ne 'Windows_NT' -or -not [Environment]::Is64BitOperatingSystem) {
     throw 'R2 Control requires x64 Windows.'
@@ -44,4 +44,5 @@ try {
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'cargo.ps1') @fetchArguments
     if ($LASTEXITCODE -ne 0) { throw 'Cargo dependency installation failed.' }
 } finally { Pop-Location }
-Write-Output 'Build dependencies are ready. See README.md to supply the vendor helper and package the app.'
+if (-not $SkipHelper -and -not $Offline) { & (Join-Path $PSScriptRoot 'get-helper.ps1') }
+Write-Output 'Build dependencies are ready. See README.md to package the app.'

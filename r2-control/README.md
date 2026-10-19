@@ -1,60 +1,63 @@
 # R2 Control
 
-A Rust rewrite of the Attack Shark R2 configuration software, with a completely rebuilt UI replacing the broken, clunky ATK interface. Rust handles device communication, validation, local storage and the native window; HTML/CSS/JavaScript provides the embedded WebView2 interface. Hardware access still uses the original vendor helper.
+A Rust rewrite of the Attack Shark R2 configuration software, with a completely rebuilt UI replacing the broken, clunky ATK interface. It provides DPI stages and colors, polling rate, button mappings, macros, profiles, battery reporting and diagnostics.
 
-## Features
+[![Windows checks](https://github.com/LoganPrangerCT/Vibecoded-Projects/actions/workflows/r2-control-ci.yml/badge.svg)](https://github.com/LoganPrangerCT/Vibecoded-Projects/actions/workflows/r2-control-ci.yml)
 
-- DPI stages and colors, polling rate and supported sensor options.
-- One button-mapping workspace with the R2 photo, named macro actions and automatic onboard slot allocation.
-- Keyboard/mouse recording, editable event timeline, playback modes and JSON import/export.
-- Eight onboard profiles, local profiles, reported battery and diagnostics.
-- Explicit Apply, readback verification, backups and device-identity checks.
+## Download and install
 
-The app configures existing firmware through the original hardware helper. It does not flash firmware. Known packet fields follow inspected original behavior; other mouse variants, physical macro playback and battery-cycle accuracy still need hardware testing.
+Download **[R2Control-Setup.exe](https://github.com/LoganPrangerCT/Vibecoded-Projects/releases/download/r2-control-v0.1.0/R2Control-Setup.exe)** and run it. The installer adds R2 Control to the Start Menu and Windows Apps list. It checks for WebView2 and the Visual C++ x86 runtime and installs them from Microsoft if missing; that step needs internet access and may request Windows administrator approval.
 
-## What is in this folder
+For a portable install, download **[R2Control-Windows-x64.zip](https://github.com/LoganPrangerCT/Vibecoded-Projects/releases/download/r2-control-v0.1.0/R2Control-Windows-x64.zip)**, extract the entire archive, and run `R2Control.exe`. Keep the extracted files together. The portable version requires WebView2 and the Visual C++ x86 runtime to already be installed. Release downloads are on the [Releases page](https://github.com/LoganPrangerCT/Vibecoded-Projects/releases/tag/r2-control-v0.1.0); GitHub's **Source code ZIP** contains developer files rather than the runnable app.
 
-Only application source, required UI assets, regression tests, dependency manifests and small build/test scripts. No personal macros/profiles, credentials, captured device data, recovered vendor application, prebuilt app, compiler distribution or hardware-helper binary is included. This is a source project, not a ready-to-run download.
+Both packages include the original validated hardware helper and required app DLLs. No Rust, Python, Node.js or compiler is needed to run them. They are built for Windows x64. Connect the R2 over 2.4 GHz wireless and make sure it is awake. Review settings and assignments before selecting **Apply**. Selecting an onboard profile switches it immediately.
 
-## Windows build
+The installer uses `%LOCALAPPDATA%\Programs\R2Control`. Settings and macros stay in its `data/` folder during updates and uninstall. Close R2 Control before updating or uninstalling. The executables are not code-signed; Windows may show an unknown-publisher prompt. Release SHA-256 checksums are provided alongside the downloads.
 
-Use x64 Windows with PowerShell 5.1+. From this project's `r2-control` directory, install the build dependencies with:
+## Scope and limitations
+
+R2 Control configures settings through the original vendor hardware helper. It does not flash firmware. The helper is a closed vendor component; its behavior and trust boundaries remain local to that component, and this project cannot guarantee every device or setting will behave correctly. Keep backups of important settings and verify changes on your device.
+
+The helper's local service is unauthenticated and has permissive CORS behavior on the tested version endpoint. This replacement UI does not fix that vendor-server limitation. Compatibility with every firmware revision and physical macro playback sequence has not been established.
+
+This is an independent project and is not officially affiliated with or endorsed by Attack Shark. Product names and marks belong to their respective owners. See [Third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Development build
+
+Source builds are for developers. The validated toolchain is Rust 1.99.1 and LLVM-MinGW 20260519 (MSVCRT, x86_64), on Windows x64 with PowerShell 5.1+. The original helper is not tracked in Git; setup obtains the exact validated build from the initial release and checks its SHA-256 before use.
+
+From this directory, prepare the toolchain and dependencies:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/setup.ps1
 ```
 
-This installs portable Rust/Cargo and LLVM-MinGW under `tools/` when missing, then downloads the Rust libraries specified by `Cargo.toml` and `Cargo.lock`. LLVM's archive is checked against its pinned official SHA-256; the Rust installer is checked against its official checksum before execution. This project has no Python or npm package dependencies, so no `pip install` step is needed. For library downloads alone after toolchain setup, run `tools/cargo.ps1 fetch --locked --target x86_64-pc-windows-gnu`.
-
-The tested build uses Rust 1.99.1 and LLVM-MinGW 20260519 (MSVCRT, x86_64). Setup uses the stable GNU Rust toolchain and the pinned [official LLVM-MinGW release](https://github.com/mstorsjo/llvm-mingw/releases/tag/20260519). Set `R2_LLVM_MINGW` to an existing extracted LLVM toolchain directory (containing `bin`) to reuse it. `tools/setup.ps1 -Offline` reuses cached tools/libraries and fails if anything required is missing.
-
-Before running the app, install the [Microsoft WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) if it is missing. Supply your local copy of the hardware helper, build183, as `vendor/iot_driver.exe`. It must have SHA-256 `73bad815658fa9aed3fa4d18a5123004afe4b263eb8c38c7b636f0b821f31aad`. Packaging verifies this identity. The helper is a separate dependency and is not uploaded or downloaded by setup.
-
-Then test and package:
+Then package:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/cargo.ps1 test --locked
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1
 ```
 
-For a helper stored elsewhere, pass `-HelperPath 'C:\path\to\iot_driver.exe'` to `tools/package.ps1`, or set `R2_HELPER_PATH`. Packaging produces `dist/R2Control/` plus the root `R2Control.exe` launcher. Keep the packaged executable, DLLs and helper together. The adjacent `data/` directory stores local settings and is excluded from Git.
-
-`tools/cargo.ps1` creates two tiny linker compatibility libraries from `tools/linker-stub.c` when needed. The setup uses LLVM-MinGW instead of the Rust self-contained GNU linker because the latter produced startup crashes in the tested build. Do not substitute that linker without runtime verification. Optional `R2_RUSTUP_HOME` and `R2_CARGO_HOME` reuse existing compatible portable Rust caches.
-
-## JavaScript tests
-
-Node.js 20+ or Bun is sufficient; no npm packages are required:
+The release distribution is assembled with:
 
 ```powershell
-node --test backend/*.test.mjs
-# or
-bun test backend
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/build-distribution.ps1
 ```
 
-The original-vendor-source extraction test is intentionally omitted because it requires the excluded recovered application and extraction tooling. Its retained packet fixtures still feed the Rust parity tests. The native UI runner embedded in the executable is included because the desktop build references it.
+The distribution script produces the installer and portable archive for release. Do not publish private profiles, macros, credentials, or captured device data. See [Contributing](CONTRIBUTING.md) for issue and patch guidance.
 
-After packaging, `tools/test-desktop.ps1` runs the app in an isolated, hidden, unfocused test mode. Hardware writes are not part of the default suites; one explicit physical-write Rust test remains ignored. New state/recording regressions use synthetic DOM input and intercepted mutation routes.
+To use an existing helper, pass `-HelperPath 'C:\path\to\iot_driver.exe'` to the packaging script. For toolchain-only setup use `tools/setup.ps1 -SkipHelper`; `-Offline` reuses cached build dependencies. Rust libraries are managed by `Cargo.toml` and `Cargo.lock`; there are no Python or npm package dependencies.
 
-## Asset provenance
+Tests:
 
-The R2 product photo came from the original vendor interface; Attack Shark names and product imagery remain third-party material. The coral shark app mark is an AI-generated design created for this project. The vendor helper and recovered vendor application are not bundled in this source upload. No project-wide license grant is added by this export.
+```powershell
+node --test
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/cargo.ps1 test --locked
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/test-desktop.ps1
+```
+
+Node.js 22+ is used in CI for JavaScript tests. The desktop check runs hidden and intercepts hardware mutations. One Rust physical-write test remains ignored by default. GitHub Actions runs Windows regression checks on changes; the **Publish R2 Control** workflow builds releases after the package version is bumped.
+
+## License
+
+Original R2 Control code is [MIT licensed](LICENSE). The vendor helper, product imagery and third-party libraries retain their own terms; they are not relicensed by the MIT grant. The release includes dependency license texts and third-party notices.

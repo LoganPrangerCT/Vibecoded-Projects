@@ -37,7 +37,7 @@ $stubFlag  = '-C' + [char]31 + "link-arg=-L$stubs"
 $unwindFlag = '-C' + [char]31 + 'link-arg=-lunwind'
 $flags = $stubFlag + [char]31 + $unwindFlag
 $env:CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUSTFLAGS = $flags
-$env:CARGO_ENCODED_RUSTFLAGS = ($env:CARGO_ENCODED_RUSTFLAGS, $flags)[!$env:CARGO_ENCODED_RUSTFLAGS]
+$env:CARGO_ENCODED_RUSTFLAGS = if ($env:CARGO_ENCODED_RUSTFLAGS) { $env:CARGO_ENCODED_RUSTFLAGS + [char]31 + $flags } else { $flags }
 
 & (Join-Path $env:CARGO_HOME 'bin\cargo.exe') @args
 exit $LASTEXITCODE

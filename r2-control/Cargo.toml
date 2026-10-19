@@ -3,6 +3,7 @@ name = "r2-control"
 version = "0.1.0"
 edition = "2021"
 description = "Local Rust control application for the Attack Shark R2"
+license = "MIT"
 
 [dependencies]
 anyhow = "1"

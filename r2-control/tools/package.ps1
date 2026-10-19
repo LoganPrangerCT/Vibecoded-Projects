@@ -4,7 +4,10 @@ $workspace = Split-Path -Parent $PSScriptRoot
 $targetDirectory = if ($env:CARGO_TARGET_DIR) { [System.IO.Path]::GetFullPath($env:CARGO_TARGET_DIR) } else { Join-Path $workspace 'target' }
 $llvmRoot = if ($env:R2_LLVM_MINGW) { $env:R2_LLVM_MINGW } else { Join-Path $PSScriptRoot 'llvm-mingw\llvm-mingw-20260519-msvcrt-x86_64' }
 $helper = if ($HelperPath) { $HelperPath } elseif ($env:R2_HELPER_PATH) { $env:R2_HELPER_PATH } else { Join-Path $workspace 'vendor\iot_driver.exe' }
-if (-not (Test-Path -LiteralPath $helper)) { throw 'Supply the hardware helper locally with -HelperPath, R2_HELPER_PATH, or vendor/iot_driver.exe. See README.md.' }
+if (-not (Test-Path -LiteralPath $helper)) {
+    if ($HelperPath -or $env:R2_HELPER_PATH) { throw 'The supplied hardware helper path does not exist.' }
+    & (Join-Path $PSScriptRoot 'get-helper.ps1') -Destination $helper
+}
 if ((Get-FileHash -LiteralPath $helper -Algorithm SHA256).Hash -ne '73BAD815658FA9AED3FA4D18A5123004AFE4B263EB8C38C7B636F0B821F31AAD') { throw 'Original hardware helper identity does not match.' }
 function Copy-PackageFile([string]$Source, [string]$Destination) {
     if ((Test-Path -LiteralPath $Destination) -and (Get-FileHash -LiteralPath $Source).Hash -eq (Get-FileHash -LiteralPath $Destination).Hash) { return }
