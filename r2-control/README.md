@@ -12,6 +12,8 @@ A Windows desktop configuration app for the Attack Shark R2 mouse. Rust handles 
 
 The app configures existing firmware through the original hardware helper. It does not flash firmware. Known packet fields follow inspected original behavior; other mouse variants, physical macro playback and battery-cycle accuracy still need hardware testing.
 
+Read [SECURITY.md](SECURITY.md) for the pre-publication audit, dependency results and the original helper's remaining security limitations, including its permissive local-service CORS behavior.
+
 ## What is in this folder
 
 Only application source, required UI assets, regression tests, dependency manifests and small build/test scripts. No personal macros/profiles, credentials, captured device data, recovered vendor application, prebuilt app, compiler distribution or hardware-helper binary is included. This is a source project, not a ready-to-run download.

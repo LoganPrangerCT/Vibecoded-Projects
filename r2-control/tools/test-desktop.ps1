@@ -114,7 +114,7 @@ $report = [ordered]@{
     isolatedDataRoot = $testRoot
     ui = $result
 }
-$evidence = Join-Path $workspace 'research\evidence\deployment-ui-test.json'
+$evidence = Join-Path $workspace 'data\deployment-ui-test.json'
 $report | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $evidence -Encoding utf8
 $report | ConvertTo-Json -Depth 20
 if (-not $report.ok) { throw "Desktop test failed. See $evidence and $testRoot" }
