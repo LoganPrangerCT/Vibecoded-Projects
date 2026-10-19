@@ -1,0 +1,37 @@
+name: R2 Control checks
+on:
+  push:
+    branches: [main]
+    paths: ['r2-control/**', '.github/workflows/r2-control-ci.yml']
+  pull_request:
+    paths: ['r2-control/**', '.github/workflows/r2-control-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: r2-control
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install build dependencies
+        run: ./tools/setup.ps1 -SkipHelper
+      - name: JavaScript regression tests
+        run: node --test
+      - name: Rust regression tests (no physical writes)
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/cargo.ps1 test --locked
+      - name: Dependency advisory report
+        run: node tools/audit-dependencies.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r2-control-dependency-report
+          path: r2-control/data/dependency-advisories.json
+          if-no-files-found: ignore

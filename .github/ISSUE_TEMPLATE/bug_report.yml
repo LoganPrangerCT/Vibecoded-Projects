@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a reproducible problem with R2 Control
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Do not attach personal macro/profile files, credentials, serial numbers, or full device dumps.
+        Remove personal information from any diagnostics before sharing.
+  - type: input
+    id: version
+    attributes:
+      label: R2 Control version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 x64
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include whether the mouse was connected over 2.4 GHz and awake.
+      placeholder: |
+        1. Open...
+        2. Change...
+        3. Select Apply...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Sanitized diagnostics (optional)
+      description: Share only relevant excerpts, with personal information removed. Do not upload macros or profile files.
+    validations:
+      required: false

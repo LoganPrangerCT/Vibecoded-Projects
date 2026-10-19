@@ -1,0 +1,51 @@
+name: Publish R2 Control
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: r2-control
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install build dependencies and verified helper
+        run: ./tools/setup.ps1
+      - name: Test
+        run: |
+          node --test
+          if ($LASTEXITCODE -ne 0) { throw 'JavaScript tests failed.' }
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/cargo.ps1 test --locked
+          if ($LASTEXITCODE -ne 0) { throw 'Rust tests failed.' }
+      - name: Build installer and portable distribution
+        run: ./tools/build-distribution.ps1
+      - name: Prepare runtime prerequisites on the disposable runner
+        run: |
+          $install = Join-Path $env:RUNNER_TEMP 'R2Control-prerequisite-check'
+          $args = '-Silent -NoRegister -NoLaunch -InstallDirectory "' + $install + '"'
+          $process = Start-Process -FilePath (Resolve-Path dist/release/R2Control-Setup.exe).Path -ArgumentList $args -WindowStyle Hidden -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Runtime prerequisite preparation failed.' }
+      - name: Hidden desktop regression tests
+        run: ./tools/test-desktop.ps1
+      - name: Isolated installer and upgrade checks
+        run: ./tools/test-installer.ps1
+      - name: Publish version from Cargo.toml
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $manifest = Get-Content Cargo.toml -Raw
+          if ($manifest -notmatch '(?m)^version = "(\d+\.\d+\.\d+)"$') { throw 'A valid package version is required.' }
+          $version = $Matches[1]
+          $tag = "r2-control-v$version"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) { throw "Release $tag already exists. Bump Cargo.toml before publishing." }
+          gh release create $tag dist/release/R2Control-Setup.exe dist/release/R2Control-Windows-x64.zip dist/release/SHA256SUMS.txt --target $env:GITHUB_SHA --title "R2 Control $version" --notes-file CHANGELOG.md
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed.' }
