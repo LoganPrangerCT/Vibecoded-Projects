@@ -1,0 +1,12 @@
+{
+  "name": "r2-control",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Rust and WebView2 configuration app for the Attack Shark R2",
+  "scripts": {
+    "start": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/launch.ps1",
+    "build": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/package.ps1",
+    "test": "node --test backend/*.test.mjs"
+  }
+}

@@ -1,0 +1,20 @@
+/* Motion confirms an interaction without moving any interactive target. */
+.view.active{animation:view-reveal .18s ease-out}
+@keyframes view-reveal{from{opacity:.45}to{opacity:1}}
+button,input,select,.button-row{transition:background-color .14s,border-color .14s,color .14s,box-shadow .14s}
+.device-photo{transform:translate3d(var(--mouse-shift-x,0),var(--mouse-shift-y,0),0);transition:transform .18s ease-out}
+.mapping-device{padding:0 8px 8px}
+.mapping-device>img{height:290px}
+.mapping-device>span{margin-top:0}
+.button-quick-select{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:100%;margin-top:20px}
+.button-target{display:flex;align-items:center;gap:9px;min-width:0;text-align:left;padding:10px 8px;background:#171717;border:1px solid var(--line);border-radius:6px;color:#a7a7a7;font-size:11px}
+.button-target-number{display:grid;place-items:center;flex:0 0 19px;height:19px;border:1px solid #555555;border-radius:4px;color:var(--control);font:10px Consolas,monospace}
+.button-target:hover,.button-target.mapping-highlight{border-color:#707070;background:var(--accent-soft);color:var(--text)}
+.mapping-assignments .button-row{padding-left:10px;padding-right:10px;margin-left:-10px;margin-right:-10px;border-radius:6px;scroll-margin-block:25px}
+.mapping-assignments .button-row.mapping-highlight{background:#202020;box-shadow:inset 2px 0 var(--control)}
+.mapping-assignments .button-row:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.button-row label small{color:#767676}
+@media(max-width:1100px){.mapping-device>img{height:250px}.button-target{font-size:10px;gap:6px;padding:9px 6px}.button-target-number{flex-basis:17px;height:17px}}
+@media(max-width:750px){.mapping-device{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(0,1fr);gap:0 18px;align-items:center}.mapping-device>img{height:215px;grid-column:1;grid-row:1/3}.mapping-device>span{grid-column:2;align-self:end;justify-self:start}.button-quick-select{grid-column:2;align-self:start;margin-top:13px}.button-target{font-size:11px}.mapping-layout{gap:18px}}
+@media(max-width:470px){.mapping-device{grid-template-columns:1fr}.mapping-device>img{height:170px;grid-column:1;grid-row:auto}.mapping-device>span{grid-column:1;justify-self:center}.button-quick-select{grid-column:1;margin-top:14px}}
+@media(prefers-reduced-motion:reduce){.view.active{animation:none}.device-photo{transform:none;transition:none}button,input,select,.button-row{transition:none}}

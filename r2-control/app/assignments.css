@@ -1,0 +1,76 @@
+/* The assignment workspace shares the original mouse artwork with Overview. */
+#macros .studio-grid{grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:stretch;min-height:590px}
+#macros .library{padding:23px 18px;border:1px solid #2c2c2c;border-radius:10px;background:#191919;min-width:0}
+#macros .library .card-title{margin-bottom:25px}
+#macros .library h1{font-size:26px;letter-spacing:-.8px;margin:0;font-weight:450}
+.macro-search-field{display:flex;align-items:center;gap:7px;border-bottom:1px solid #383838;margin-bottom:20px;color:#959595}
+.macro-search-field>span{font-size:23px;line-height:1}
+#macro-search{width:100%;padding:10px 0;border:0;border-radius:0;background:none;font-size:11px}
+#macros #new-macro{width:100%;margin-bottom:24px;padding:12px 8px;background:transparent;border:1px solid #767676;color:#d7d7d7;font-size:11px;font-weight:500}
+#macros #new-macro:hover{background:var(--accent-soft);border-color:var(--control)}
+#macros #macro-list{display:block;overflow:visible}
+#macros #macro-list .library-item{width:100%;min-width:0;max-width:none;gap:5px;padding:12px 8px;font-size:12px;margin-bottom:5px}
+#macros #macro-list .library-item small{font-size:9px}
+#macros #macro-list>.empty{border:0;text-align:left;padding:5px 0 15px;font-size:11px;line-height:1.8;color:#757575}
+.macro-workspace-body{min-width:0}
+#macros .macro-workspace-body>.editor{display:none}
+#macros.macro-editing .macro-workspace-body>.editor{display:block}
+#macros.macro-editing #macro-assignment-scene{display:none}
+/* Keep the editor return action in the top-right corner. */
+.macro-editor-nav{margin-bottom:19px;display:flex;align-items:center;justify-content:flex-end;gap:14px;flex-wrap:wrap}
+#macro-assignment-scene{min-width:0;padding-top:15px}
+.assignment-scene-heading{text-align:center;padding:0 0 3px}
+.assignment-scene-heading h2{font-size:35px;letter-spacing:-1.5px;font-weight:400}
+.assignment-scene-heading p{font-size:10px;color:#898989;letter-spacing:1px;margin:6px 0 0}
+/* REVIEW(6.1 sol): UI-Next-Steps item 2 — the diagram (photo + % calibrated overlay: leaders,
+   callouts, underside note) is scaled to 80% in one container, so everything stays aligned.
+   The panel, heading, and library around it keep their original size. */
+.assignment-diagram{position:relative;isolation:isolate;width:80%;max-width:800px;aspect-ratio:800/560;margin:5px auto 0}
+.assignment-photo{position:absolute;width:38.75%;height:auto;top:8.036%;left:30.625%;filter:drop-shadow(0 18px 16px #0008);pointer-events:none;user-select:none}
+.assignment-leaders{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.assignment-leader{stroke:#878787;stroke-width:1;fill:none;vector-effect:non-scaling-stroke;transition:stroke .14s}
+.assignment-leader circle{fill:#d1d1d1;stroke:none}
+.assignment-leader.is-active{stroke:var(--control)}
+.assignment-leader.is-active circle{fill:var(--control)}
+.assignment-leader.underside path{stroke-dasharray:4 4}
+.assignment-callout{position:absolute;display:flex;flex-direction:column;justify-content:center;width:24%;min-height:49px;background:none;border:0;border-radius:0;padding:5px 0;text-align:left;color:#d7d7d7;line-height:1.3;transform:translateY(-50%)}
+.assignment-callout[data-side="left"]{left:0;text-align:right}
+.assignment-callout[data-side="right"]{right:0}
+.assignment-callout-name{font-size:14px;overflow-wrap:anywhere}
+.assignment-callout-detail{font-size:9px;color:#737373;margin-top:5px;overflow-wrap:anywhere}
+.assignment-callout:hover,.assignment-callout:focus-visible{color:var(--control);background:none}
+.assignment-callout:hover .assignment-callout-detail,.assignment-callout:focus-visible .assignment-callout-detail{color:#a1a1a1}
+.assignment-underside-note{position:absolute;top:92%;left:33%;width:34%;text-align:center;color:#838383;font-size:9px;letter-spacing:.3px}
+#macro-assignment-editor{padding:20px;margin:0 0 20px;min-width:0;border-color:#474747;background:#111111}
+#macro-assignment-editor .card-title{gap:12px;margin-bottom:0;align-items:center}
+#macro-assignment-editor .card-title h2{font-size:14px}
+#macro-assignment-editor .button-row{border:0;min-width:0}
+#macro-assignment-editor .setting-row{flex-wrap:wrap;gap:12px}
+#macro-assignment-editor .setting-row>span{flex:1;min-width:110px;width:auto;font-size:12px;color:var(--text)}
+#macro-assignment-editor .setting-row label{min-width:100px}
+/* REVIEW(6.1 sol): UI-Next-Steps item 1 — larger, OS-free hit area for the panel selects and the
+   combo field: dark grayscale fills, a drawn chevron, and an explicit focus ring. Native options,
+   keyboard behavior, and the aria-labels the tests rely on are unchanged. */
+#macro-assignment-editor select{appearance:none;-webkit-appearance:none;min-height:42px;padding:11px 34px 11px 13px;border:1px solid #333333;border-radius:6px;background-color:#151515;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23a1a1a1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;color:var(--text);font-size:12px;cursor:pointer}
+#macro-assignment-editor select:hover{border-color:#4b4b4b}
+#macro-assignment-editor select:focus-visible{border-color:var(--control);background-color:#1b1b1b;outline:2px solid var(--focus)}
+#macro-assignment-editor .setting-row select{width:205px;max-width:100%}
+#macro-assignment-editor .setting-row input{min-height:42px;padding:11px 13px;border:1px solid #333333;border-radius:6px;background-color:#151515;color:var(--text);font-size:12px}
+#macro-assignment-editor .setting-row input:focus-visible{border-color:var(--control);outline:2px solid var(--focus)}
+#macro-assignment-editor .macro-pick-note{flex-basis:100%;margin:0;font-size:10px;line-height:1.5;color:#8d8d8d}
+#macro-assignment-editor .button-extras{flex-wrap:wrap;margin-bottom:0}
+#macro-assignment-editor .button-extras input,#macro-assignment-editor .button-extras select{min-width:0;max-width:100%}
+#macro-assignment-editor .card-actions{position:static;flex-wrap:wrap;gap:12px;background:transparent;margin-top:15px;padding-top:0}
+#macro-assignment-editor .card-actions>.fine{flex:1 1 140px}
+#macro-assignment-editor .card-actions button{font-size:11px}
+@media(max-width:1100px){#macros .studio-grid{grid-template-columns:190px minmax(0,1fr);gap:18px}#macros .library{padding:21px 15px}.assignment-callout-name{font-size:11px}}
+@media(max-width:900px){#macros .studio-grid{grid-template-columns:174px minmax(0,1fr);gap:17px;min-height:530px}#macros .library{padding:20px 13px}#macros .library h1{font-size:24px}.assignment-scene-heading h2{font-size:31px}.assignment-callout-name{font-size:11px}.assignment-callout-detail{font-size:9px}}
+@media(max-width:650px){#macros .studio-grid{grid-template-columns:minmax(0,1fr);gap:22px;min-height:0}#macros .library{padding:0 0 18px;border-right:0;border-bottom:1px solid var(--line)}#macros .library .card-title{margin-bottom:14px}.macro-search-field{margin-bottom:12px}#macros #new-macro{margin-bottom:14px}#macros #macro-list{display:flex;gap:6px;overflow-x:auto}#macros #macro-list .library-item{width:auto;min-width:130px;flex-shrink:0}#macros #macro-list>.empty{padding-bottom:0}#macro-assignment-scene{padding-top:0}.assignment-callout{width:25%}.assignment-callout-name{font-size:10px}.assignment-callout-detail{font-size:8px}.assignment-underside-note{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.assignment-leader{transition:none}}
+
+.mapping-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.mapping-toolbar h1{font-size:28px;letter-spacing:-1px;margin:0 auto 0 0}
+.mapping-toolbar .fine{font-size:10px;max-width:260px}
+.mapping-toolbar button{font-size:11px}
+.slot-choice-list{display:grid;gap:8px;max-height:55vh;overflow:auto;margin:18px 0}.slot-choice{display:flex;align-items:center;gap:12px;padding:11px;border:1px solid #383838;border-radius:6px;color:#ddd}.slot-choice input{accent-color:var(--control)}#macro-slot-picker{width:min(520px,calc(100vw - 32px));max-height:85vh;background:#171717;color:#eee;border:1px solid #444;border-radius:10px;padding:24px}#macro-slot-picker::backdrop{background:#000a}
+@media(max-width:900px){.mapping-toolbar .fine{flex-basis:100%;order:4;max-width:none}}

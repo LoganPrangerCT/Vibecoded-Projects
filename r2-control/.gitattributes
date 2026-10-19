@@ -1,0 +1,6 @@
+recovered/** -text
+app/assets/** -text
+*.rs text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
