@@ -18,14 +18,19 @@ Only application source, required UI assets, regression tests, dependency manife
 
 ## Windows build
 
-Runtime and build prerequisites are listed in [requirements.txt](requirements.txt). Rust dependencies are managed by `Cargo.toml` and `Cargo.lock`.
+Use x64 Windows with PowerShell 5.1+. From this project's `r2-control` directory, install the build dependencies with:
 
-Use an x64 Windows machine with the Microsoft WebView2 Runtime. Building uses the GNU Rust target with LLVM-MinGW; the tested configuration was Rust 1.99.1 and LLVM-MinGW 20260519 (MSVCRT, x86_64).
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/setup.ps1
+```
 
-1. Run `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/install-rust.ps1` to install the portable Rust toolchain under `tools/`.
-2. Download **llvm-mingw-20260519-msvcrt-x86_64.zip** from the [official LLVM-MinGW release](https://github.com/mstorsjo/llvm-mingw/releases/tag/20260519) and extract it under `tools/llvm-mingw/`. Alternatively, set `R2_LLVM_MINGW` to an existing extracted toolchain directory (the directory containing `bin`).
-3. Supply your local copy of the hardware helper, build183, as `vendor/iot_driver.exe`. It must have SHA-256 `73bad815658fa9aed3fa4d18a5123004afe4b263eb8c38c7b636f0b821f31aad`. Packaging verifies this identity. The helper is a separate dependency and is not uploaded here.
-4. Build:
+This installs portable Rust/Cargo and LLVM-MinGW under `tools/` when missing, then downloads the Rust libraries specified by `Cargo.toml` and `Cargo.lock`. LLVM's archive is checked against its pinned official SHA-256; the Rust installer is checked against its official checksum before execution. This project has no Python or npm package dependencies, so no `pip install` step is needed. For library downloads alone after toolchain setup, run `tools/cargo.ps1 fetch --locked --target x86_64-pc-windows-gnu`.
+
+The tested build uses Rust 1.99.1 and LLVM-MinGW 20260519 (MSVCRT, x86_64). Setup uses the stable GNU Rust toolchain and the pinned [official LLVM-MinGW release](https://github.com/mstorsjo/llvm-mingw/releases/tag/20260519). Set `R2_LLVM_MINGW` to an existing extracted LLVM toolchain directory (containing `bin`) to reuse it. `tools/setup.ps1 -Offline` reuses cached tools/libraries and fails if anything required is missing.
+
+Before running the app, install the [Microsoft WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) if it is missing. Supply your local copy of the hardware helper, build183, as `vendor/iot_driver.exe`. It must have SHA-256 `73bad815658fa9aed3fa4d18a5123004afe4b263eb8c38c7b636f0b821f31aad`. Packaging verifies this identity. The helper is a separate dependency and is not uploaded or downloaded by setup.
+
+Then test and package:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/cargo.ps1 test --locked
